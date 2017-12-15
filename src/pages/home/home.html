@@ -1,17 +1,20 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>Home</ion-title>
-  </ion-navbar>
+  <ion-toolbar style="text-align:center" color = "primary">
+    <ion-title align="center">智能停车系统</ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+  <ion-item>当前状态：</ion-item>
+  <ion-item>开始停车时间：</ion-item>
+  <ion-item>停车结束时间：</ion-item>
+  <ion-item no-lines="">花费：</ion-item>
+  <div style="margin-right: 30px;margin-left: 30px;margin-bottom: 30px">
+  <button ion-button block>
+    停车
+  </button>
+  <button ion-button block>
+    取车
+  </button>
+  </div>
 </ion-content>
