@@ -13,6 +13,8 @@ import { EditPage } from "../pages/edit/edit";
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HttpClientModule } from "@angular/common/http";
+import {UserService} from "../service/userService";
+import {RegisterPage} from "../pages/register/register";
 
 
 @NgModule({
@@ -24,7 +26,8 @@ import { HttpClientModule } from "@angular/common/http";
     TabsPage,
     LoginPage,
     ProfilingPage,
-    EditPage
+    EditPage,
+    RegisterPage
   ],
   imports: [
     BrowserModule,
@@ -40,12 +43,14 @@ import { HttpClientModule } from "@angular/common/http";
     TabsPage,
     LoginPage,
     ProfilingPage,
-    EditPage
+    EditPage,
+    RegisterPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    UserService
   ]
 })
 export class AppModule {}

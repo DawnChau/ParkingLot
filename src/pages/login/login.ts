@@ -4,9 +4,11 @@ import { HomePage} from "../home/home";
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {TabsPage} from "../tabs/tabs";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
 import {URI_PREFIX} from "../home/Constants";
 import 'rxjs/add/operator/toPromise'
+import {Users} from "../../model/usersModel";
+import {UserService} from "../../service/userService";
+import {RegisterPage} from "../register/register";
 
 /**
  * Generated class for the LoginPage page.
@@ -18,16 +20,20 @@ import 'rxjs/add/operator/toPromise'
 @IonicPage()
 @Component({
   selector: 'page-login',
-  templateUrl: 'login.html'
+  templateUrl: 'login.html',
+  providers:[UserService]
 })
 export class LoginPage {
 
   phoneNum:string;
   password:string;
 
+  static myUser:Users=null;
+
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
+              private userService:UserService,
               private http:HttpClient) {
   }
 
@@ -37,20 +43,22 @@ export class LoginPage {
 
   logIn() {
     // 拿到用户名和密码，然后去服务器get一下。
-    console.log(this.phoneNum);
-    console.log(this.password);
-    this.http.get(URI_PREFIX+'/Users/?Users.phonenum='+this.phoneNum+'&Users.password='+this.password).toPromise()
-      .then(res=>{
-        console.log(res);
-      })
-      .catch(error=>{
-        //如果请求出错，打印错误
-        console.log(error);
+    return this.http.get(URI_PREFIX+ '/Users/?Users.phonenum='+this.phoneNum).toPromise()
+      .then(data=>{
+        LoginPage.myUser = this.userService.setUser(data['Users'][0]);
+        if(LoginPage.myUser.password!=this.password){
+          alert("密码错误");
+          return ;
+        }
+        this.navCtrl.push(TabsPage);
+      }).catch(error=>{
+        alert("用户未注册");
       });
+
   }
 
-  register(username: HTMLInputElement, password: HTMLInputElement){
-
+  register(){
+    this.navCtrl.push(RegisterPage);
   }
 
 }

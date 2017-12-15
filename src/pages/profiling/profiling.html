@@ -15,11 +15,11 @@
   <ion-list class="top-list">
     <button ion-item >
       手机号
-      <span  item-end #phoneNum>13407195518</span>
+      <span  item-end >{{phoneNumProf}}</span>
     </button>
     <button ion-item>
       车牌号
-      <span  item-end #plateNum>沪A12345</span>
+      <span  item-end >{{plateNumProf}}</span>
     </button>
   </ion-list>
 
@@ -35,7 +35,7 @@
 
 
   <div style="text-align: center; margin-left: 30px; margin-right: 30px;margin-top: 30px;">
-    <button ion-button block color = "primary" (click)="edit(phoneNum,plateNum)">
+    <button ion-button block color = "primary" (click)="edit()">
       编辑信息
     </button>
     <button ion-button block color = "danger" (click)="logOut()">
