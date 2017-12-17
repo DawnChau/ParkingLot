@@ -37,4 +37,13 @@ export class UserService{
       "carid":user.carid
     }
   }
+
+  setStateFirstly(user:Users):any{
+    return {
+      "phonenum":user.phonenum,
+      "password":user.password,
+      "carid":user.carid,
+      "state":user.state
+    }
+  }
 }

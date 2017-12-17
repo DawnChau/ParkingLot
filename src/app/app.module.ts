@@ -15,7 +15,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { HttpClientModule } from "@angular/common/http";
 import {UserService} from "../service/userService";
 import {RegisterPage} from "../pages/register/register";
-
+import {ParkingLotListPage} from "../pages/parking-lot-list/parking-lot-list";
+import { ParkService } from "../service/parkService";
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {RegisterPage} from "../pages/register/register";
     LoginPage,
     ProfilingPage,
     EditPage,
-    RegisterPage
+    RegisterPage,
+    ParkingLotListPage
   ],
   imports: [
     BrowserModule,
@@ -44,13 +46,15 @@ import {RegisterPage} from "../pages/register/register";
     LoginPage,
     ProfilingPage,
     EditPage,
-    RegisterPage
+    RegisterPage,
+    ParkingLotListPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    UserService
+    UserService,
+    ParkService
   ]
 })
 export class AppModule {}
