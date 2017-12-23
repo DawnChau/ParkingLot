@@ -17,6 +17,9 @@ import {UserService} from "../service/userService";
 import {RegisterPage} from "../pages/register/register";
 import {ParkingLotListPage} from "../pages/parking-lot-list/parking-lot-list";
 import { ParkService } from "../service/parkService";
+import {BarcodeScanner} from "@ionic-native/barcode-scanner";
+import {ConcretePage} from "../pages/concrete/concrete";
+import {ConInfoService} from "../service/conInfoService";
 
 @NgModule({
   declarations: [
@@ -29,7 +32,8 @@ import { ParkService } from "../service/parkService";
     ProfilingPage,
     EditPage,
     RegisterPage,
-    ParkingLotListPage
+    ParkingLotListPage,
+    ConcretePage
   ],
   imports: [
     BrowserModule,
@@ -47,14 +51,17 @@ import { ParkService } from "../service/parkService";
     ProfilingPage,
     EditPage,
     RegisterPage,
-    ParkingLotListPage
+    ParkingLotListPage,
+    ConcretePage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     UserService,
-    ParkService
+    ParkService,
+    BarcodeScanner,
+    ConInfoService
   ]
 })
 export class AppModule {}

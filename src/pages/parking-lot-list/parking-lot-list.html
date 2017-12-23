@@ -13,45 +13,14 @@
 
 
 <ion-content >
-  <ion-list>
-    <button ion-item>
-      <h1>软件学院停车场</h1>
-      <h2 >剩余车位：15个</h2>
-      <h2>价格：15元/小时</h2>
-      <p>地址：上海市闵行区上海交通大学软件学院</p>
-    </button>
-    <button ion-item>
-      <h1>软件学院停车场</h1>
-      <h2 >剩余车位：15个</h2>
-      <h2>价格：15元/小时</h2>
-      <p>地址：上海市闵行区上海交通大学软件学院</p>
-    </button>
 
+  <div #map id="map_container"></div>
+  <ion-list>
+  <ion-item ion-item *ngFor="let item of parks" (click)="itemSelected(item)">
+  <h1>{{item.name}}</h1>
+  <h2 >剩余车位：{{item.left}}个</h2>
+  <h2>{{item.price}}</h2>
+  <p>{{item.address}}</p>
+  </ion-item>
   </ion-list>
-<!--<ion-list>-->
-  <!--<ion-item-group *ngFor="park in parks">-->
-    <!--&lt;!&ndash;ion-item-divider 类似 iOS tableview 的 section header&ndash;&gt;-->
-    <!--<ion-item-divider color="light" sticky width>-->
-      <!--<h3>-->
-        <!--{{ park }} - {{ group.name }}-->
-      <!--</h3>-->
-    <!--</ion-item-divider>-->
-    <!--<ion-item-sliding *ngFor="let school of group.school">-->
-      <!--<ion-item>-->
-        <!--<ion-label>{{ school.name }}-->
-          <!--<p>{{ school.id.toString() }}</p>-->
-        <!--</ion-label>-->
-      <!--</ion-item>-->
-      <!--<ion-item-options side="left">-->
-        <!--<button ion-button color="favorite" (click)="onFavorite(school)">Favorite</button>-->
-      <!--</ion-item-options>-->
-      <!--<ion-item-options side="right">-->
-        <!--<button ion-button color="primary">-->
-          <!--<ion-icon name="mail"></ion-icon>-->
-          <!--Email-->
-        <!--</button>-->
-      <!--</ion-item-options>-->
-    <!--</ion-item-sliding>-->
-  <!--</ion-item-group>-->
-<!--</ion-list>-->
 </ion-content>

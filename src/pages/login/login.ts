@@ -9,6 +9,7 @@ import 'rxjs/add/operator/toPromise'
 import {Users} from "../../model/usersModel";
 import {UserService} from "../../service/userService";
 import {RegisterPage} from "../register/register";
+import {ConInfo} from "../../model/conInfoModel";
 
 /**
  * Generated class for the LoginPage page.
@@ -29,6 +30,9 @@ export class LoginPage {
   password:string;
 
   static myUser:Users=null;
+  static startHour:number;
+  static endHour:number;
+  static myConinfo:ConInfo=null;
 
 
   constructor(public navCtrl: NavController,

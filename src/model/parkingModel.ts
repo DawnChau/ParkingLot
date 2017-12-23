@@ -6,6 +6,9 @@ export class Park{
   left:number;
   price:string;
   address:string;
+  total:number;
+  lon:string;
+  
 
 
   public constructor(

@@ -6,6 +6,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import {LoginPage} from "../pages/login/login";
 import {ParkingLotListPage} from "../pages/parking-lot-list/parking-lot-list";
+import {ConcretePage} from "../pages/concrete/concrete";
+import {TabsPage} from "../pages/tabs/tabs";
 
 
 @Component({
