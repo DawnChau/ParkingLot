@@ -26,10 +26,12 @@ declare var BMap_Symbol_SHAPE_POINT;
 export class ParkingLotListPage {
 
   parks = [];
+  points = [];
+  markers = [];
 
   @ViewChild('map') map_container: ElementRef;
   map: any;//地图对象
-  //marker: any;//标记
+
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
               private http:HttpClient,
@@ -39,41 +41,63 @@ export class ParkingLotListPage {
   }
 
   ionViewDidEnter() {
-    let map = this.map = new BMap.Map(this.map_container.nativeElement, { enableMapClick: true });//创建地图实例
+    let map = this.map = new BMap.Map(this.map_container.nativeElement, { enableMapClick: true });
 
-    // map.centerAndZoom("广州",17); //设置城市设置中心和地图显示级别
-    let point = new BMap.Point(121.442396,31.028615);//坐标可以通过百度地图坐标拾取器获取
-    map.centerAndZoom(point, 17);//设置中心和地图显示级别
+    //当前位置
+    let now = new BMap.Point(121.442396,31.028615);
 
+
+    //设置中心和地图显示级别
+    map.centerAndZoom(now, 17);
+
+    //添加控制器
     map.addControl(new BMap.MapTypeControl());
-    // map.setCurrentCity("广州");
-
-    let sizeMap = new BMap.Size(10, 80);//显示位置
     map.addControl(new BMap.NavigationControl());
 
+    //设置地图尺寸
+    let sizeMap = new BMap.Size(10, 80);
 
-    map.enableScrollWheelZoom(true);//启动滚轮放大缩小，默认禁用
-    map.enableContinuousZoom(true);//连续缩放效果，默认禁用
+    //启动滚轮放大缩小，默认禁用
+    map.enableScrollWheelZoom(true);
 
-    let myIcon = new BMap.Icon("assets/icon/favicon.ico",new BMap.Size(300,157));
+    //连续缩放效果，默认禁用
+    map.enableContinuousZoom(true);
 
-    //let marker = this.marker = new BMap.Marker(point,{icon:myIcon});
-    let maker = new BMap.Marker(point);
-    map.addOverlay(maker);
-    var opts = {
-      title : "软件学院停车场" , // 信息窗口标题
+    //设置覆盖物
+    let nowMarker = new BMap.Marker(now);
+    //let park1Marker = new BMap.Marker(park1);
+    //let park2Marker = new BMap.Marker(park2);
+
+
+    //添加覆盖物到地图
+    map.addOverlay(nowMarker);
+    //map.addOverlay(park1Marker);
+    //map.addOverlay(park2Marker);
+
+    //设置覆盖物的点击提示
+    var park1Opts = {
+      title : "软件学院停车场" ,
     }
-    var infoWindow = new BMap.InfoWindow("地址：上海交通大学软件学院", opts);  // 创建信息窗口对象
-    maker.addEventListener("click", function(){
-      map.openInfoWindow(infoWindow,point); //开启信息窗口
-    });
+    var park1Window = new BMap.InfoWindow("地址：上海交通大学软件学院", park1Opts);  // 创建信息窗口对象
+    //park1Marker.addEventListener("click", function(){
+      //map.openInfoWindow(park1Window,park1); //开启信息窗口
+    //});
 
-    let park1 = new BMap.Point(121.448317,31.028597);
-    let park1Maker = new BMap.Marker(park1);
-    map.addOverlay(park1Maker);
+    var park2Opts = {
+      title : "总停车场" ,
+    }
+    var park2Window = new BMap.InfoWindow("地址：上海交通大学软件学院", park2Opts);  // 创建信息窗口对象
+    //park2Marker.addEventListener("click", function(){
+      //map.openInfoWindow(park2Window,park2); //开启信息窗口
+    //});
 
-    var driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});
-    driving.search(point, park1);
+
+    var driving = new BMap.DrivingRoute(map, {renderOptions: {map: map, panel: "r-result", autoViewport: true}});
+    //driving.search(now, park1);
+
+
+    //var driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});
+    //driving.search(now, park1);
   }
 
   init(){
@@ -86,6 +110,11 @@ export class ParkingLotListPage {
         }
         console.log('停车场信息加载完成');
         console.log(data);
+
+        for(var j = 0;j<this.parks.length;j++){
+            this.points.push(new BMap.Point(this.parks[j].lon,this.parks[j].lat));
+            this.
+        }
       }).catch(error=>{
         alert("获取停车场信息失败");
       });
@@ -103,4 +132,7 @@ export class ParkingLotListPage {
   }
 
 
+  myNavigation(item: any) {
+
+  }
 }

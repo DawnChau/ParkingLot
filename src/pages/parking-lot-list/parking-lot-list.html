@@ -15,12 +15,18 @@
 <ion-content >
 
   <div #map id="map_container"></div>
+  <div id="r-result" hidden></div>
   <ion-list>
-  <ion-item ion-item *ngFor="let item of parks" (click)="itemSelected(item)">
-  <h1>{{item.name}}</h1>
-  <h2 >剩余车位：{{item.left}}个</h2>
-  <h2>{{item.price}}</h2>
-  <p>{{item.address}}</p>
-  </ion-item>
+    <ion-item ion-item *ngFor="let item of parks"  >
+      <h1>{{item.name}}</h1>
+      <h2 >剩余车位：{{item.left}}个</h2>
+      <h2>{{item.price}}</h2>
+      <p>{{item.address}}</p>
+      <ion-row>
+          <button  ion-button="" style="width:45%" (click)="myNavigation(item)">导航</button>
+          <button ion-button="" style="width:45%" (click)="itemSelected(item)">停车</button>
+
+      </ion-row>
+    </ion-item>
   </ion-list>
 </ion-content>

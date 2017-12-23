@@ -8,7 +8,9 @@ export class Park{
   address:string;
   total:number;
   lon:string;
-  
+  lat:string;
+  decrip:string;
+
 
 
   public constructor(
@@ -18,6 +20,10 @@ export class Park{
       left:number;
       price:string;
       address:string;
+      total:number;
+      lon:string;
+      lat:string;
+      decrip:string;
     }
   ){
     if(fields)

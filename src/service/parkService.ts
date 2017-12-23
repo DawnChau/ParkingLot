@@ -18,7 +18,11 @@ export class ParkService{
       name:data['name'],
       left:data['left'],
       price:data['price'],
-      address:data['address']
+      address:data['address'],
+      total:data['total'],
+      lon:data['lon'],
+      lat:data['lat'],
+      decrip:data['decrip']
     })
   }
 
