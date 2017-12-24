@@ -20,6 +20,7 @@ import { ParkService } from "../service/parkService";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner";
 import {ConcretePage} from "../pages/concrete/concrete";
 import {ConInfoService} from "../service/conInfoService";
+import {OrderService} from "../service/orderService";
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import {ConInfoService} from "../service/conInfoService";
     UserService,
     ParkService,
     BarcodeScanner,
-    ConInfoService
+    ConInfoService,
+    OrderService
   ]
 })
 export class AppModule {}

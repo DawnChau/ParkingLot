@@ -7,6 +7,7 @@ import {ParkService} from "../../service/parkService";
 import {Park} from "../../model/parkingModel";
 import {BarcodeScanner, BarcodeScannerOptions} from "@ionic-native/barcode-scanner";
 import {ConcretePage} from "../concrete/concrete";
+import {Geolocation} from "@ionic-native/geolocation";
 
 /**
  * Generated class for the ParkingLotListPage page.
@@ -16,7 +17,7 @@ import {ConcretePage} from "../concrete/concrete";
  */
 
 declare var BMap;
-declare var BMap_Symbol_SHAPE_POINT;
+
 
 @IonicPage()
 @Component({
@@ -27,7 +28,9 @@ export class ParkingLotListPage {
 
   parks = [];
   points = [];
-  markers = [];
+  opts = [];
+  now = null;
+  driving = null;
 
   @ViewChild('map') map_container: ElementRef;
   map: any;//地图对象
@@ -36,103 +39,92 @@ export class ParkingLotListPage {
   constructor(public navCtrl: NavController, public navParams: NavParams,
               private http:HttpClient,
               private parkService:ParkService) {
-    this.init();
-
   }
 
   ionViewDidEnter() {
-    let map = this.map = new BMap.Map(this.map_container.nativeElement, { enableMapClick: true });
-
-    //当前位置
-    let now = new BMap.Point(121.442396,31.028615);
+    this.map = this.map = new BMap.Map(this.map_container.nativeElement, { enableMapClick: true });
+    this.driving = new BMap.DrivingRoute(this.map, {renderOptions: {map: this.map, panel: "r-result", autoViewport: true}});
 
 
-    //设置中心和地图显示级别
-    map.centerAndZoom(now, 17);
+        //当前位置
+        this.now = new BMap.Point(121.442396,31.028615);
 
-    //添加控制器
-    map.addControl(new BMap.MapTypeControl());
-    map.addControl(new BMap.NavigationControl());
+        //设置中心和地图显示级别
+        this.map.centerAndZoom(this.now, 17);
 
-    //设置地图尺寸
-    let sizeMap = new BMap.Size(10, 80);
+        //添加控制器
+        this.map.addControl(new BMap.MapTypeControl());
+        this.map.addControl(new BMap.NavigationControl());
 
-    //启动滚轮放大缩小，默认禁用
-    map.enableScrollWheelZoom(true);
+        //设置地图尺寸
+        let sizeMap = new BMap.Size(10, 80);
 
-    //连续缩放效果，默认禁用
-    map.enableContinuousZoom(true);
+        //启动滚轮放大缩小，默认禁用
+        this.map.enableScrollWheelZoom(true);
 
-    //设置覆盖物
-    let nowMarker = new BMap.Marker(now);
-    //let park1Marker = new BMap.Marker(park1);
-    //let park2Marker = new BMap.Marker(park2);
+        //连续缩放效果，默认禁用
+        this.map.enableContinuousZoom(true);
 
-
-    //添加覆盖物到地图
-    map.addOverlay(nowMarker);
-    //map.addOverlay(park1Marker);
-    //map.addOverlay(park2Marker);
-
-    //设置覆盖物的点击提示
-    var park1Opts = {
-      title : "软件学院停车场" ,
-    }
-    var park1Window = new BMap.InfoWindow("地址：上海交通大学软件学院", park1Opts);  // 创建信息窗口对象
-    //park1Marker.addEventListener("click", function(){
-      //map.openInfoWindow(park1Window,park1); //开启信息窗口
-    //});
-
-    var park2Opts = {
-      title : "总停车场" ,
-    }
-    var park2Window = new BMap.InfoWindow("地址：上海交通大学软件学院", park2Opts);  // 创建信息窗口对象
-    //park2Marker.addEventListener("click", function(){
-      //map.openInfoWindow(park2Window,park2); //开启信息窗口
-    //});
+        //设置覆盖物
+        let nowMarker = new BMap.Marker(this.now);
+        console.log(nowMarker)
 
 
-    var driving = new BMap.DrivingRoute(map, {renderOptions: {map: map, panel: "r-result", autoViewport: true}});
-    //driving.search(now, park1);
+        //添加覆盖物到地图
+        this.map.addOverlay(nowMarker);
+
+    return this.http.get(URI_PREFIX+ '/Park/').toPromise()
+      .then(data=>{
+        console.log(data['Park'].length);
+        //获取停车场的信息
+        if(this.parks.length==0){
+          for(var i = 0;i<data['Park'].length;i++){
+            this.parks.push(this.parkService.setPark(data['Park'][i]));
+          }
+          console.log('停车场信息加载完成');
+          console.log(data);
+
+          for(var j = 0;j<this.parks.length;j++){
+            this.points.push(new BMap.Point(Number(this.parks[j].lon),Number(this.parks[j].lat)));
+            let marker = new BMap.Marker(this.points[j]);
+            this.map.addOverlay(marker);
+            //console.log(this.markers[j])
+            var opts = {
+              position : this.points[j],    // 指定文本标注所在的地理位置
+              offset   : new BMap.Size(10, -10)    //设置文本偏移量
+            }
+            var label = new BMap.Label(this.parks[j].name, opts);
+            this.map.addOverlay(label);
+          }
+
+        }
+      }).catch(error=>{
+        alert("获取停车场信息失败");
+      });
 
 
     //var driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});
     //driving.search(now, park1);
   }
 
-  init(){
-    return this.http.get(URI_PREFIX+ '/Park/').toPromise()
-      .then(data=>{
-        console.log(data['Park'].length);
-        //获取停车场的信息
-        for(var i = 0;i<data['Park'].length;i++){
-          this.parks.push(this.parkService.setPark(data['Park'][i]));
-        }
-        console.log('停车场信息加载完成');
-        console.log(data);
 
-        for(var j = 0;j<this.parks.length;j++){
-            this.points.push(new BMap.Point(this.parks[j].lon,this.parks[j].lat));
-            this.
-        }
-      }).catch(error=>{
-        alert("获取停车场信息失败");
-      });
-  }
-
+  //隐藏tabs的操作
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ParkingLotListPage');
+    console.log('ionViewDidLoad EditPage');
   }
-
 
   itemSelected(item: Park) {
     this.navCtrl.push(ConcretePage,{
-      "pid":item.id
+      "pid":item.id,
+      "price":item.price,
+      "self":item
     });
   }
 
 
   myNavigation(item: any) {
-
+    var result = document.getElementById("r-result");
+    result.hidden = false;
+    this.driving.search(this.now, new BMap.Point(item.lon,item.lat));
   }
 }

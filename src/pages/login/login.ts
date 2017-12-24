@@ -10,6 +10,8 @@ import {Users} from "../../model/usersModel";
 import {UserService} from "../../service/userService";
 import {RegisterPage} from "../register/register";
 import {ConInfo} from "../../model/conInfoModel";
+import {Order} from "../../model/orderModel";
+import {Park} from "../../model/parkingModel";
 
 /**
  * Generated class for the LoginPage page.
@@ -32,7 +34,10 @@ export class LoginPage {
   static myUser:Users=null;
   static startHour:number;
   static endHour:number;
+  static price:number;
   static myConinfo:ConInfo=null;
+  static myOrder:Order=null;
+  static myParkInfo:Park = null;
 
 
   constructor(public navCtrl: NavController,

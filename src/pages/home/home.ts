@@ -7,6 +7,9 @@ import {UserService} from "../../service/userService";
 import {ParkingLotListPage} from "../parking-lot-list/parking-lot-list";
 import {TabsPage} from "../tabs/tabs";
 import {ConInfoService} from "../../service/conInfoService";
+import {OrderService} from "../../service/orderService";
+import {Order} from "../../model/orderModel";
+import {ParkService} from "../../service/parkService";
 
 @Component({
   selector: 'page-home',
@@ -21,7 +24,9 @@ export class HomePage {
   date = new Date();
 
   constructor(public navCtrl: NavController,private http:HttpClient,private userService:UserService,
-              private conInfoService:ConInfoService) {
+              private conInfoService:ConInfoService,
+              private orderService: OrderService,
+              private parkService:ParkService) {
 
   }
 
@@ -47,38 +52,87 @@ export class HomePage {
     }
 
     if(LoginPage.myUser.starttime!='' && LoginPage.myUser.starttime!=undefined){
-      alert(LoginPage.myUser.starttime);
       this.startTime="开始时间："+LoginPage.myUser.starttime;
     }
 
     if(LoginPage.myUser.endtime!="" && LoginPage.myUser.endtime != undefined){
       this.endTime="结束时间："+LoginPage.myUser.endtime;
+    }else{
+      this.endTime="结束时间：";
+    }
+
+    if(LoginPage.myUser.cost!=0 && LoginPage.myUser.cost != undefined){
+      this.cost="花费："+LoginPage.myUser.cost+"元";
+    }else{
+      this.cost="花费：";
     }
   }
 
   homePark() {
+    if(LoginPage.myUser.state == 1){
+      alert("您此刻正处于停车状态");
+      return ;
+    }
     this.navCtrl.push(ParkingLotListPage);
   }
 
   homeStop() {
+
+    if(LoginPage.myUser.state==0){
+      alert("您还未停车");
+      return ;
+    }
+
+    LoginPage.myUser.endtime=this.date.getFullYear()+"年" + (this.date.getMonth()+1)+"月"+this.date.getDate()+"日"+
+      this.date.getHours()+"时"+this.date.getMinutes()+"分";
+    LoginPage.myUser.state=0;
+    LoginPage.endHour=this.date.getHours();
+    LoginPage.myUser.cost=(LoginPage.endHour-LoginPage.startHour+1)*LoginPage.price;
+    alert("(不足一小时按一小时计算)您此次共停车"+(LoginPage.endHour-LoginPage.startHour+1)+"小时,共花费"+LoginPage.myUser.cost+"元");
+
+    LoginPage.myOrder = new Order()
+    LoginPage.myOrder.leave=LoginPage.myUser.endtime;
+
+    var orderData = [];
+    orderData['phonenum'] = LoginPage.myUser.phonenum;
+    orderData['start'] = LoginPage.myUser.starttime;
+    orderData['leave'] = LoginPage.myUser.endtime;
+    orderData['charge'] = LoginPage.myUser.cost+"";
+    orderData['spaceid'] = LoginPage.myUser.cid+"";
+    orderData['lotid'] = LoginPage.myUser.pid+"";
+
+    LoginPage.myOrder = this.orderService.setOrder(orderData);
+
     LoginPage.myConinfo.isoccupy=0;
     this.http.put(URI_PREFIX+'/Coninfo/'+LoginPage.myConinfo.id,
       this.conInfoService.setConInfo(LoginPage.myConinfo),this.conInfoService.myHead)
       .toPromise()
       .then(res=>{
         alert("取车成功");
-        LoginPage.myUser.endtime=this.date.getFullYear()+"年" + (this.date.getMonth()+1)+"月"+this.date.getDay()+"日"+
-          this.date.getHours()+"时"+this.date.getMinutes()+"分";
-        LoginPage.myUser.state=0;
-        LoginPage.myUser.pid=undefined;
-        LoginPage.myUser.cid=undefined;
-        LoginPage.endHour=this.date.getHours();
         this.ionViewWillEnter()
         //this.navCtrl.push(TabsPage);
 
+        //发送订单
+        this.http.post(URI_PREFIX+'/Parkorder/',this.orderService.setOrder(LoginPage.myOrder),
+          this.conInfoService.myHead).toPromise().then(res=>{
+            alert("订单保存成功");
+
+          //将剩余停车位加一
+          LoginPage.myParkInfo.left++;
+          this.http.put(URI_PREFIX+'/Park/'+LoginPage.myUser.pid,
+            this.parkService.setPark(LoginPage.myParkInfo),this.parkService.myHead).toPromise().then(res=>{
+            alert("停车场剩余车位数目更新成功");
+            LoginPage.myUser.pid=undefined;
+            LoginPage.myUser.cid=undefined;
+          }).catch(err=>{
+            alert("停车场剩余车位数目更新失败");
+          })
+        })
       })
       .catch(error=>{
-        alert("停车失败");
+        alert("取车失败");
       });
+
+
   }
 }

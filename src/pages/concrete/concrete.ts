@@ -8,6 +8,7 @@ import {BarcodeScanner, BarcodeScannerOptions} from "@ionic-native/barcode-scann
 import {LoginPage} from "../login/login";
 import {toPromise} from "rxjs/operator/toPromise";
 import {TabsPage} from "../tabs/tabs";
+import {ParkService} from "../../service/parkService";
 
 /**
  * Generated class for the ConcretePage page.
@@ -31,7 +32,8 @@ export class ConcretePage {
   constructor(public navCtrl: NavController, public navParams: NavParams,
               private http:HttpClient,
               private conInfoService:ConInfoService,
-              private scanner:BarcodeScanner) {
+              private scanner:BarcodeScanner,
+              private parkService:ParkService) {
   }
 
   ionViewDidLoad() {
@@ -86,14 +88,30 @@ export class ConcretePage {
             .toPromise()
             .then(res=>{
               alert("停车成功");
-              LoginPage.myUser.starttime=this.date.getFullYear()+"年" + (this.date.getMonth()+1)+"月"+this.date.getDay()+"日"+
+              LoginPage.myUser.starttime=this.date.getFullYear()+"年" + (this.date.getMonth()+1)+"月"+this.date.getDate()+"日"+
                 this.date.getHours()+"时"+this.date.getMinutes()+"分";
               LoginPage.myUser.state=1;
               LoginPage.myUser.pid=item.pid;
               LoginPage.myUser.cid=item.number;
+              LoginPage.myUser.cost=0;
+              LoginPage.myUser.endtime = "";
               LoginPage.startHour=this.date.getHours();
               LoginPage.myConinfo=item;
-              this.navCtrl.push(TabsPage);
+              LoginPage.price = this.navParams.get("price");
+
+
+              LoginPage.myParkInfo = this.navParams.get("self");
+              //将剩余停车位减一
+              var tmpPark = this.navParams.get("self");
+              tmpPark.left--;
+              this.http.put(URI_PREFIX+'/Park/'+item.pid,
+                this.parkService.setPark(tmpPark),this.parkService.myHead).toPromise().then(res=>{
+                alert("停车场剩余车位数目更新成功");
+                this.navCtrl.push(TabsPage);
+              }).catch(err=>{
+                alert("停车场剩余车位数目更新失败");
+              });
+
 
             })
             .catch(error=>{
@@ -105,7 +123,7 @@ export class ConcretePage {
 
       })
       .catch((err) => {
-        alert(err.msg);
+        alert("扫描二维码失败");
       });
   }
 }
