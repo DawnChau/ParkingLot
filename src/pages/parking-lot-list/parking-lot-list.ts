@@ -47,7 +47,7 @@ export class ParkingLotListPage {
 
 
         //当前位置
-        this.now = new BMap.Point(121.442396,31.028615);
+        this.now = new BMap.Point(121.448608,31.028699);
 
         //设置中心和地图显示级别
         this.map.centerAndZoom(this.now, 17);
